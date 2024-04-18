@@ -17,4 +17,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         return user
 
+class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)  # Specify user as a required field
+
+    class Meta:
+        model = Profile
+        fields = "__all__"
 
