@@ -36,3 +36,11 @@ class Register(generics.CreateAPIView):
                 return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# User Profile
+class ProfileView(generics.RetrieveUpdateAPIView):
+    permission_classes = [permissions.IsAuthenticated, ]
+    serializer_class = ProfileSerializer
+
+    def get_object(self):
+        # Retrieve the profile associated with the authenticated user
+        return Profile.objects.get(user=self.request.user)
