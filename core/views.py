@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from .models import Profile
 from .serializers import ProfileSerializer, UserSerializer, RegisterSerializer
 
-# login Authenticate
+# Login Authentication
 class Login(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -18,29 +18,26 @@ class Login(ObtainAuthToken):
 
 # User Registration
 class Register(generics.CreateAPIView):
-    queryset = User.objects.all()
     serializer_class = RegisterSerializer
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.save()
-            # Pass the user instance, not just the user_id
-            profile_serializer = ProfileSerializer(data={'user': user.id, 'other_field': 'value'})
-            if profile_serializer.is_valid():
-                profile_serializer.save(user=user)  # Pass the user instance to save method
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({"token": token.key, "user_id": user.id}, status=status.HTTP_201_CREATED)
-            else:
-                user.delete()  # Delete the user if profile creation fails
-                return Response(profile_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key, "user_id": user.id}, status=status.HTTP_201_CREATED)
 
 # User Profile
 class ProfileView(generics.RetrieveUpdateAPIView):
-    permission_classes = [permissions.IsAuthenticated, ]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = ProfileSerializer
 
     def get_object(self):
-        # Retrieve the profile associated with the authenticated user
-        return Profile.objects.get(user=self.request.user)
+        user = self.request.user
+        # Attempt to retrieve the profile associated with the user
+        try:
+            profile = Profile.objects.get(user=user)
+        except Profile.DoesNotExist:
+            # If profile doesn't exist, create a new one
+            profile = Profile.objects.create(user=user)
+        return profile
