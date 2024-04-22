@@ -32,15 +32,15 @@ class ProfileSerializer(serializers.ModelSerializer):
         return profile
 
     def update(self, instance, validated_data):
-        user_data = validated_data.pop('user')
-        user = instance.user
-        user.username = user_data.get('username', user.username)
-        user.email = user_data.get('email', user.email)
-        user.save()
+        user_data = validated_data.pop('user', None)
+        if user_data:
+            user = instance.user
+            user.username = user_data.get('username', user.username)
+            user.email = user_data.get('email', user.email)
+            user.save()
 
         instance.profile_pic = validated_data.get('profile_pic', instance.profile_pic)
         instance.bio = validated_data.get('bio', instance.bio)
         instance.save()
 
         return instance
-
