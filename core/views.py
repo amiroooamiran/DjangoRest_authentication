@@ -53,7 +53,11 @@ class RegisterView(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 # verfication
+class VerifyEmail(generics.GenericAPIView):
+    serializer_class = EmailVerificationSerializer
 
+    def get(self):
+        pass
 
 # User Profile
 class ProfileView(generics.RetrieveUpdateAPIView):
