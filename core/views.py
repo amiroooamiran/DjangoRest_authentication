@@ -1,11 +1,20 @@
+from django.contrib.auth.models import User
+
 from rest_framework import generics, status
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
-from django.contrib.auth.models import User
+from rest_framework.renderers import JSONRenderer
+from django.contrib.sites.shortcuts import get_current_site
+from django.urls import reverse
+
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import Profile
-from .serializers import ProfileSerializer, UserSerializer, RegisterSerializer
+from .serializers import ProfileSerializer,RegisterSerializer, EmailVerificationSerializer
+
+from .utils import Util
 
 # Login Authentication
 class Login(ObtainAuthToken):
@@ -17,15 +26,34 @@ class Login(ObtainAuthToken):
         return Response({"token": token.key, "user_id": user.id})
 
 # User Registration
-class Register(generics.CreateAPIView):
+class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
+    renderer_classes = [JSONRenderer]  # Add JSONRenderer as the renderer class
 
-    def create(self, request, *args, **kwargs):
+    def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({"token": token.key, "user_id": user.id}, status=status.HTTP_201_CREATED)
+
+        token = RefreshToken.for_user(user).access_token
+        current_site = get_current_site(request).domain
+        relative_link = reverse('email-verify')  # You need to define 'email-verify' URL
+        abs_url = 'http://' + current_site + relative_link + "?token=" + str(token)
+        email_body = (
+            f"Hi {user.username},\n"
+            f"Welcome To Authentication Project\n"
+        )
+        data = {
+            'email_body': email_body,
+            'to_email': user.email,
+            'email_subject': 'Welcome',
+        }
+
+        Util.send_email(data)  # Assuming send_email function is defined in Util module
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+# verfication
+
 
 # User Profile
 class ProfileView(generics.RetrieveUpdateAPIView):
