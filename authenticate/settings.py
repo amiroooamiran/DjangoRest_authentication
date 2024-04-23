@@ -63,7 +63,7 @@ ROOT_URLCONF = 'authenticate.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -146,3 +146,13 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8080",
 ]
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'  # SMTP server address for Gmail
+EMAIL_PORT = 587  # Port for SMTP connection for Gmail
+EMAIL_USE_TLS = True  # Use TLS for SMTP connection for Gmail
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # Email username (email address) for authentication
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # Email password for authentication
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')  # Default email address for sending emails
