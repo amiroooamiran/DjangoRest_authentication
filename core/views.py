@@ -12,7 +12,7 @@ from django.urls import reverse
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Profile
-from .serializers import ProfileSerializer,RegisterSerializer, EmailVerificationSerializer
+from .serializers import ProfileSerializer,RegisterSerializer, EmailVerificationSerializer, RestePasswordSerializer
 
 from .utils import Util
 
@@ -25,6 +25,15 @@ class Login(ObtainAuthToken):
         token, created = Token.objects.get_or_create(user=user)
         return Response({"token": token.key, "user_id": user.id})
 
+class ResetPassword(generics.GenericAPIView):
+    serializer_class = RestePasswordSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
+
 # User Registration
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
@@ -35,10 +44,6 @@ class RegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        token = RefreshToken.for_user(user).access_token
-        current_site = get_current_site(request).domain
-        relative_link = reverse('email-verify')  # You need to define 'email-verify' URL
-        abs_url = 'http://' + current_site + relative_link + "?token=" + str(token)
         email_body = (
             f"Hi {user.username},\n"
             f"Welcome To Authentication Project\n"
