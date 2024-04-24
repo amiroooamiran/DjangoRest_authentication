@@ -9,14 +9,14 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update && apt-get install -y libpq-dev
 
 # Set the working directory in the container
-WORKDIR /authenticated
+WORKDIR /django_authenticated
 
 # Copy and install Python dependencies first
-COPY requirements.txt /authenticated/requirements.txt
+COPY requirements.txt /django_authenticated/requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
-COPY . /authenticated
+COPY . /django_authenticated
 
 # Clean up unnecessary files (optional)
 # RUN rm -rf /var/lib/apt/lists/*
