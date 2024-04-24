@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from .models import Profile
+
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+
+from .utils import Util
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -51,3 +58,37 @@ class EmailVerificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['token']
+
+class RestePasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    class Meta:
+        fields = ['email']
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("User does not exist with this email")
+
+        # Generate a new random password
+        new_password = Util.generate_random_password()
+
+        # Set the new password for the user
+        user.password = make_password(new_password)
+        user.save()
+
+        # Send the new password to the user's email
+        email_data = {
+            'email_subject': 'Your password has been reset',
+            'email_body': f'Your new password is: {new_password}',
+            'to_email': user.email
+        }
+        Util.send_email(email_data)
+
+        return attrs
+
+    def create(self, validated_data):
+        # Since we're not creating any new instance, just return the validated data
+        return validated_data
