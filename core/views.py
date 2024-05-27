@@ -13,7 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import Profile
 from .serializers import ProfileSerializer,RegisterSerializer, EmailVerificationSerializer, RestePasswordSerializer
-
+from .producer import publish
 from .utils import Util
 
 # Login Authentication
@@ -23,6 +23,7 @@ class Login(ObtainAuthToken):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=user)
+        publish()
         return Response({"token": token.key, "user_id": user.id})
 
 class ResetPassword(generics.GenericAPIView):
