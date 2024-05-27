@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-t0n8jmxjur=^#oy@i#@uvhqm#vh)3((jk74eg8033po=+=4y&_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -85,11 +85,11 @@ WSGI_APPLICATION = 'authenticate.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
+        'NAME': 'authenticat',
+        'USER': 'root',
+        'PASSWORD': 'root',
         'HOST': 'db',  # Replace with your PostgreSQL server's address if necessary
-        'PORT': '5432',          # Leave empty to use the default PostgreSQL port (usually 5432)
+        'PORT': '5432', # Leave empty to use the default PostgreSQL port (usually 5432)
     }
 }
 
@@ -155,9 +155,10 @@ CORS_ALLOWED_ORIGINS = [
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = 'smtp.gmail.com'  # SMTP server address for Gmail
-EMAIL_PORT = 587  # Port for SMTP connection for Gmail
-EMAIL_USE_TLS = True  # Use TLS for SMTP connection for Gmail
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # Email username (email address) for authentication
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # Email password for authentication
-DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')  # Default email address for sending emails
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Replace with your SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+DEFAULT_FROM_EMAIL = ''
