@@ -1,12 +1,9 @@
 # Use the official Python image as the base image
-FROM python:3.11
+FROM python:3.11-alpine
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y libpq-dev
 
 # Set the working directory in the container
 WORKDIR /django_authenticated
