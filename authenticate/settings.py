@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
 
-     'corsheaders',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -88,8 +88,8 @@ DATABASES = {
         'NAME': 'authenticat',
         'USER': 'root',
         'PASSWORD': 'root',
-        'HOST': 'db',  # Replace with your PostgreSQL server's address if necessary
-        'PORT': '5432', # Leave empty to use the default PostgreSQL port (usually 5432)
+        'HOST': 'db', 
+        'PORT': '5432',
     }
 }
 
