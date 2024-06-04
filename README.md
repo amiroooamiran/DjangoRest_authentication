@@ -44,7 +44,7 @@
 
 <h4>For Linux:</h4>
 
-<p>Install PostgreSQL:</p>
+<p><b>Install PostgreSQL: <img src="https://img.shields.io/badge/PostgreSQL-v16.3-blue.svg?logo=postgresql&logoColor=white" alt="PostgreSQL Badge"></b></p>
 
 <span>Arch Linux:</span>
 
@@ -92,6 +92,43 @@ GRANT ALL PRIVILEGES ON DATABASE authenticat TO myuser;
 
 <h4>For Windows:</h4>
 <p>You can download and install PostgreSQL from the official website: <a href="https://www.postgresql.org/download/windows/">PostgreSQL Official Website</a>.</p>
+
+<p><strong>Install Kafka: <img src="https://img.shields.io/badge/Apache%20Kafka-v3.7.0-red.svg?logo=apache-kafka&logoColor=white" alt="Apache Kafka Badge">
+</strong></p>
+<p>Before installing Kafka on your Linux system, you need to install Java, specifically JDK. You can use the following commands to install JDK on your Linux distribution:</p>
+<p><span>For Arch Linux:</span></p>
+<pre><code>sudo pacman -S jdk-openjdk
+</code></pre>
+<p><span>For Debian Linux:</span></p>
+<pre><code>sudo apt install openjdk-17-jdk
+</code></pre>
+<p>After installing Java, you can verify the installation by running:</p>
+<pre><code>java --version
+</code></pre>
+<p>In the next step, you should install Kafka. You can download your desired version from <a href="https://kafka.apache.org/downloads">this link</a> and then configure it for your project:</p>
+<p><strong>Extract:</strong></p>
+<pre><code>tar -xzf kafka_2.13–3.5.0.tgz
+cd kafka_2.13–3.5.0
+</code></pre>
+<p><strong>Start:</strong></p>
+<ul>
+<li>Generate a Cluster UUID:
+<pre><code>KAFKA_CLUSTER_ID="$(bin/kafka-storage.sh random-uuid)"
+</code></pre>
+</li>
+<li>Format Log Directories:
+<pre><code>bin/kafka-storage.sh format -t $KAFKA_CLUSTER_ID -c config/kraft/server.properties
+</code></pre>
+</li>
+<li>Start the Kafka Server:
+<pre><code>bin/kafka-server-start.sh config/kraft/server.properties
+</code></pre>
+</li>
+<li>Create a topic:
+<pre><code>bin/kafka-console-consumer.sh --topic topic_user_created --bootstrap-server localhost:9092 --from-beginning
+</code></pre>
+</li>
+</ul>
 
 <h3>Config Email App Password</h3>
 
