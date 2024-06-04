@@ -93,8 +93,8 @@ GRANT ALL PRIVILEGES ON DATABASE authenticat TO myuser;
 <h4>For Windows:</h4>
 <p>You can download and install PostgreSQL from the official website: <a href="https://www.postgresql.org/download/windows/">PostgreSQL Official Website</a>.</p>
 
-<p><strong>Install Kafka: <img src="https://img.shields.io/badge/Apache%20Kafka-v3.7.0-red.svg?logo=apache-kafka&logoColor=white" alt="Apache Kafka Badge">
-</strong></p>
+<h2><strong>Install Kafka: <img src="https://img.shields.io/badge/Apache%20Kafka-v3.7.0-red.svg?logo=apache-kafka&logoColor=white" alt="Apache Kafka Badge">
+</strong></h2>
 <p>Before installing Kafka on your Linux system, you need to install Java, specifically JDK. You can use the following commands to install JDK on your Linux distribution:</p>
 <p><span>For Arch Linux:</span></p>
 <pre><code>sudo pacman -S jdk-openjdk
