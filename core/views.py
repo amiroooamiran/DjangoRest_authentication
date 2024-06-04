@@ -9,11 +9,14 @@ from rest_framework.renderers import JSONRenderer
 from django.contrib.sites.shortcuts import get_current_site
 from django.urls import reverse
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from .producer_user_created import ProducerUserCreated
 
 from .models import Profile
 from .serializers import ProfileSerializer,RegisterSerializer, EmailVerificationSerializer, RestePasswordSerializer
 from .utils import Util
+import json
+
+producerUserCreated=ProducerUserCreated()
 
 # Login Authentication
 class Login(ObtainAuthToken):
@@ -34,6 +37,8 @@ class ResetPassword(generics.GenericAPIView):
         return Response({"message": "Password reset successfully"}, status=status.HTTP_200_OK)
 
 # User Registration
+
+
 class RegisterView(generics.GenericAPIView):
     serializer_class = RegisterSerializer
     renderer_classes = [JSONRenderer]  # Add JSONRenderer as the renderer class
@@ -52,6 +57,7 @@ class RegisterView(generics.GenericAPIView):
             'to_email': user.email,
             'email_subject': 'Welcome',
         }
+        producerUserCreated.publish("user_created_method",json.dumps(serializer.data))
 
         Util.send_email(data)  # Assuming send_email function is defined in Util module
         return Response(serializer.data, status=status.HTTP_201_CREATED)
